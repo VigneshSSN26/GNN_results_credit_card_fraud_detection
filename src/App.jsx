@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FiTarget, FiCheckCircle, FiAlertTriangle, FiGithub, FiGrid, FiBarChart3, FiTrendingUp, FiShield, FiActivity } from 'react-icons/fi';
+import {
+  FiTarget,
+  FiCheckCircle,
+  FiAlertTriangle,
+  FiGithub,
+  FiGrid,
+  FiBarChart3,
+  FiTrendingUp,
+  FiShield,
+  FiActivity
+} from "react-icons/fi";
+
 
 // Mock data for demonstration
 const mockMetrics = {
