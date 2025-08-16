@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import {
-  FiTarget,
-  FiCheckCircle,
-  FiAlertTriangle,
-  FiGithub,
-  FiGrid,
-  FiBarChart3,
-  FiTrendingUp,
-  FiShield,
-  FiActivity
-} from "react-icons/fi";
-
+import { FiTarget, FiCheckCircle, FiAlertTriangle, FiGithub, FiGrid, FiBarChart, FiTrendingUp, FiShield, FiActivity } from 'react-icons/fi';
 
 // Mock data for demonstration
 const mockMetrics = {
@@ -126,7 +115,7 @@ const Sidebar = () => (
       
       <ul className="space-y-2">
         <NavItem icon={<FiGrid className="w-5 h-5" />} text="Dashboard" active />
-        <NavItem icon={<FiBarChart3 className="w-5 h-5" />} text="Analytics" />
+        <NavItem icon={<FiBarChart className="w-5 h-5" />} text="Analytics" />
         <NavItem icon={<FiTarget className="w-5 h-5" />} text="Predictions" />
         <NavItem icon={<FiActivity className="w-5 h-5" />} text="Monitoring" />
       </ul>
