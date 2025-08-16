@@ -75,9 +75,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-900">
+    <div className="flex min-h-screen bg-gray-900 text-white">
       <Sidebar />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-gray-900">
         <div className="p-6 lg:p-8">
           <Header />
           <div className="space-y-8">
@@ -101,7 +101,7 @@ const Dashboard = () => {
 // --- Components ---
 
 const Sidebar = () => (
-  <nav className="hidden lg:block w-64 bg-slate-800 border-r border-slate-700 flex-shrink-0">
+  <nav className="w-64 bg-gray-800 border-r border-gray-700 flex-shrink-0">
     <div className="p-6">
       <div className="flex items-center mb-8">
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center mr-3">
@@ -109,7 +109,7 @@ const Sidebar = () => (
         </div>
         <div>
           <h1 className="text-xl font-bold text-white">FraudShield</h1>
-          <p className="text-xs text-slate-400">AI Detection</p>
+          <p className="text-xs text-gray-400">AI Detection</p>
         </div>
       </div>
       
@@ -120,9 +120,9 @@ const Sidebar = () => (
         <NavItem icon={<FiActivity className="w-5 h-5" />} text="Monitoring" />
       </ul>
       
-      <div className="absolute bottom-6 left-6">
+      <div className="mt-8">
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
-           className="flex items-center text-sm text-slate-400 hover:text-white transition-colors">
+           className="flex items-center text-sm text-gray-400 hover:text-white transition-colors">
           <FiGithub className="w-4 h-4 mr-2" />
           GitHub
         </a>
@@ -135,7 +135,7 @@ const NavItem = ({ icon, text, active = false }) => (
   <li className={`flex items-center px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 ${
     active 
       ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg' 
-      : 'text-slate-400 hover:bg-slate-700 hover:text-white'
+      : 'text-gray-400 hover:bg-gray-700 hover:text-white'
   }`}>
     {icon}
     <span className="ml-3 font-medium">{text}</span>
@@ -147,10 +147,10 @@ const Header = () => (
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-3xl font-bold text-white mb-2">Model Performance Dashboard</h2>
-        <p className="text-slate-400">Real-time fraud detection analytics and insights</p>
+        <p className="text-gray-400">Real-time fraud detection analytics and insights</p>
       </div>
       <div className="flex items-center space-x-4">
-        <div className="flex items-center px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm border border-green-500/20">
+        <div className="flex items-center px-3 py-1 bg-green-500 bg-opacity-10 text-green-400 rounded-full text-sm border border-green-500 border-opacity-20">
           <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
           Model Active
         </div>
@@ -197,11 +197,11 @@ const StatCards = ({ metrics }) => (
 );
 
 const StatCard = ({ title, value, icon, trend, trendUp, gradient }) => (
-  <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 relative overflow-hidden group hover:border-slate-600 transition-colors">
+  <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 relative overflow-hidden group hover:border-gray-600 transition-colors">
     <div className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
-    <div className="flex items-start justify-between">
+    <div className="flex items-start justify-between relative z-10">
       <div className="flex-1">
-        <p className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">{title}</p>
+        <p className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-2">{title}</p>
         <p className="text-2xl lg:text-3xl font-bold text-white mb-1">{value}</p>
         {trend && (
           <div className={`flex items-center text-sm ${trendUp ? 'text-green-400' : 'text-red-400'}`}>
@@ -220,12 +220,12 @@ const StatCard = ({ title, value, icon, trend, trendUp, gradient }) => (
 );
 
 const PRCurveChart = ({ data }) => (
-  <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+  <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
     <div className="mb-6">
       <h3 className="text-xl font-semibold text-white mb-2">Precision-Recall Curve</h3>
-      <p className="text-slate-400 text-sm">Model performance across different threshold values</p>
+      <p className="text-gray-400 text-sm">Model performance across different threshold values</p>
     </div>
-    <div className="h-80">
+    <div className="h-80 bg-gray-900 rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <defs>
@@ -277,23 +277,23 @@ const PRCurveChart = ({ data }) => (
 );
 
 const ModelInfoCard = () => (
-  <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+  <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
     <h3 className="text-lg font-semibold text-white mb-4">Model Information</h3>
     <div className="space-y-3">
       <div className="flex justify-between">
-        <span className="text-slate-400">Algorithm</span>
+        <span className="text-gray-400">Algorithm</span>
         <span className="text-white font-medium">Graph Neural Network</span>
       </div>
       <div className="flex justify-between">
-        <span className="text-slate-400">Training Data</span>
+        <span className="text-gray-400">Training Data</span>
         <span className="text-white font-medium">1.2M Transactions</span>
       </div>
       <div className="flex justify-between">
-        <span className="text-slate-400">Last Updated</span>
+        <span className="text-gray-400">Last Updated</span>
         <span className="text-white font-medium">2 hours ago</span>
       </div>
       <div className="flex justify-between">
-        <span className="text-slate-400">Version</span>
+        <span className="text-gray-400">Version</span>
         <span className="text-white font-medium">v2.1.0</span>
       </div>
     </div>
@@ -301,7 +301,7 @@ const ModelInfoCard = () => (
 );
 
 const RecentActivity = () => (
-  <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
+  <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
     <h3 className="text-lg font-semibold text-white mb-4">Recent Activity</h3>
     <div className="space-y-4">
       <ActivityItem 
@@ -359,19 +359,19 @@ const ActivityItem = ({ type, message, time, severity }) => {
 };
 
 const StatusDisplay = ({ isError = false, message }) => (
-  <div className={`bg-slate-900 min-h-screen flex flex-col items-center justify-center p-4 text-center`}>
+  <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4 text-center">
     <div className="max-w-md">
       <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-        isError ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'
+        isError ? 'bg-red-500 bg-opacity-10 text-red-400' : 'bg-blue-500 bg-opacity-10 text-blue-400'
       }`}>
         {isError ? <FiAlertTriangle className="w-8 h-8" /> : <FiActivity className="w-8 h-8 animate-spin" />}
       </div>
       <h2 className="text-2xl font-bold mb-4 text-white">
         {isError ? "Failed to Load Dashboard Data" : "Loading Dashboard..."}
       </h2>
-      <p className="text-slate-400 mb-4">{message}</p>
+      <p className="text-gray-400 mb-4">{message}</p>
       {isError && (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-gray-500">
           Using demo data for visualization. Please ensure the backend scripts have run successfully.
         </p>
       )}
