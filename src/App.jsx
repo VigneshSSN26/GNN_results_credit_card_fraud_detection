@@ -259,6 +259,7 @@ const RecentActivity = () => (
     <div className="space-y-4">
       <ActivityItem message="High-risk transaction #TX789 flagged" time="5 min ago" severity="high" />
       <ActivityItem message="Model retraining completed successfully" time="2 hours ago" severity="success" />
+      {/* --- THIS IS THE CORRECTED LINE --- */}
       <ActivityItem message="Unusual activity spike from merchant M12" time="1 day ago" severity="warning" />
     </div>
   </motion.div>
@@ -307,4 +308,8 @@ const ErrorMessage = ({ message }) => (
         exit={{ opacity: 0 }}
     >
         <p className="font-semibold">Data Warning</p>
-        <p classNam
+        <p className="text-sm">{message}</p>
+    </motion.div>
+);
+
+export default Dashboard;
