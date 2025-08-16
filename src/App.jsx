@@ -50,10 +50,11 @@ const Dashboard = () => {
           })).sort((a, b) => a.recall - b.recall);
           setPrData(formattedPrData);
         } else {
-           throw new Error("Real data not found, using mock data.");
+           throw new Error("Real data not found. Displaying mock data for demonstration.");
         }
       } catch (err) {
         console.warn(err.message);
+        setError(err.message);
         // Use mock data as a fallback if fetching fails
         setMetrics(mockMetrics);
         setPrData(mockPrData);
@@ -71,27 +72,30 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-brand-dark text-gray-300">
+    <div className="flex min-h-screen bg-brand-dark text-gray-300 font-sans">
       <Sidebar />
       <main className="flex-1 overflow-y-auto">
         <div className="p-6 lg:p-8">
           <Header />
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            className="space-y-8"
-          >
-            <StatCards metrics={metrics} />
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              <div className="xl:col-span-2">
-                <PRCurveChart data={prData} />
+          <AnimatePresence>
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
+            >
+              {error && <ErrorMessage message={error} />}
+              <StatCards metrics={metrics} />
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div className="xl:col-span-2">
+                  <PRCurveChart data={prData} />
+                </div>
+                <div className="space-y-8">
+                  <ModelInfoCard />
+                  <RecentActivity />
+                </div>
               </div>
-              <div className="space-y-8">
-                <ModelInfoCard />
-                <RecentActivity />
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
     </div>
@@ -143,7 +147,7 @@ const NavItem = ({ icon, text, active = false }) => (
 
 const Header = () => (
   <header className="mb-8">
-    <div className="flex items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h2 className="text-3xl font-bold text-white mb-1">Model Performance Dashboard</h2>
         <p className="text-gray-400">Real-time fraud detection analytics and insights</p>
@@ -290,9 +294,17 @@ const StatusDisplay = ({ isError = false, message }) => (
         {isError ? <FiAlertTriangle className="w-8 h-8" /> : <FiShield className="w-8 h-8" />}
       </motion.div>
       <h2 className="text-2xl font-bold mb-4 text-white">{isError ? "Failed to Load Data" : message}</h2>
-      {isError && <p className="text-gray-400">Please ensure backend scripts ran and results are in `frontend/public/data/`.</p>}
+      {isError && <p className="text-gray-400">{message}</p>}
     </div>
   </div>
 );
 
-export default Dashboard;
+const ErrorMessage = ({ message }) => (
+    <motion.div 
+        className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 px-4 py-3 rounded-lg"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+    >
+        <p className="font-semibold">Data Warning</p>
+        <p classNam
