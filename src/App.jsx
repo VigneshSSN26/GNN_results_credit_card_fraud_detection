@@ -1,123 +1,168 @@
 // File: frontend/src/App.jsx
 
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { motion } from 'framer-motion';
-import { FaChartLine, FaBullseye, FaBalanceScale, FaCheckCircle } from 'react-icons/fa';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiGrid, FiTarget, FiCheckCircle, FiAlertTriangle, FiGithub } from 'react-icons/fi';
 
-function App() {
+// Main Dashboard Component
+const Dashboard = () => {
   const [metrics, setMetrics] = useState(null);
   const [prData, setPrData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // This function fetches the data from the /public/data folder
     const fetchData = async () => {
       try {
-        // Fetch performance metrics
         const metricsResponse = await fetch('/data/performance_metrics.json');
-        if (!metricsResponse.ok) throw new Error("Metrics file not found.");
         const metricsData = await metricsResponse.json();
         setMetrics(metricsData);
 
-        // Fetch P-R curve data
         const prResponse = await fetch('/data/pr_curve_data.json');
-        if (!prResponse.ok) throw new Error("P-R curve data file not found.");
         const rawPrData = await prResponse.json();
-        
-        // Combine the two arrays into an array of objects for Recharts
         const formattedPrData = rawPrData.recall.map((rec, index) => ({
           recall: rec,
           precision: rawPrData.precision[index],
-        })).sort((a, b) => a.recall - b.recall); // Sort data for a clean line
+        })).sort((a, b) => a.recall - b.recall);
         setPrData(formattedPrData);
-      } catch (err) {
-        setError(err.message);
-        console.error("Failed to fetch model results:", err);
+      } catch (error) {
+        console.error("Failed to load model results:", error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []); // The empty array ensures this runs only once when the component mounts
-
-  if (loading) {
-    return (
-      <div className="bg-gray-900 text-white min-h-screen flex items-center justify-center">
-        <p>Loading model results...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-        <div className="bg-gray-900 text-red-400 min-h-screen flex flex-col items-center justify-center p-4">
-            <h2 className="text-2xl font-bold mb-4">Failed to Load Dashboard Data</h2>
-            <p className="text-center mb-2">Error: {error}</p>
-            <p className="text-center text-gray-400">Please make sure you have run the Python backend scripts and copied the generated JSON files into the `frontend/public/data/` directory.</p>
-        </div>
-    );
-  }
-
+  }, []);
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen p-4 sm:p-8 font-sans">
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-cyan-400">GNN Fraud Detection Dashboard</h1>
-          <p className="text-gray-400 mt-1">Analysis of the Predictive Model Performance</p>
-        </header>
-
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <StatCard title="Optimal Threshold" value={metrics.best_threshold.toFixed(2)} icon={<FaBullseye />} />
-          <StatCard title="Fraud Recall" value={`${(metrics.recall * 100).toFixed(1)}%`} icon={<FaChartLine />} />
-          <StatCard title="Fraud Precision" value={`${(metrics.precision * 100).toFixed(1)}%`} icon={<FaCheckCircle />} />
-          <StatCard title="Fraud F1-Score" value={metrics.f1_score.toFixed(2)} icon={<FaBalanceScale />} />
-        </motion.div>
-
-        <motion.div 
-          className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-white">Precision-Recall Curve</h2>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={prData} margin={{ top: 5, right: 20, left: 10, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2D3748" />
-              <XAxis dataKey="recall" stroke="#A0AEC0" type="number" domain={[0, 1]} tickFormatter={(val) => val.toFixed(1)}
-                     label={{ value: 'Recall', position: 'insideBottom', offset: -15, fill: '#A0AEC0' }} />
-              <YAxis stroke="#A0AEC0" type="number" domain={[0, 1]} tickFormatter={(val) => val.toFixed(1)}
-                     label={{ value: 'Precision', angle: -90, position: 'insideLeft', offset: 0, fill: '#A0AEC0' }}/>
-              <Tooltip contentStyle={{ backgroundColor: '#1A202C', border: '1px solid #4A5568' }} />
-              <Legend wrapperStyle={{ color: '#A0AEC0' }} />
-              <Line type="monotone" dataKey="precision" name="Precision" stroke="#4FD1C5" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </motion.div>
-      </div>
+    <div className="flex min-h-screen bg-brand-dark font-sans">
+      <Sidebar />
+      <main className="flex-1 p-4 sm:p-8">
+        <Header />
+        <AnimatePresence>
+          {loading ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-center h-96 text-gray-400">Loading Results...</motion.div>
+          ) : (
+            <motion.div initial="hidden" animate="visible">
+              <StatCards metrics={metrics} />
+              <PRCurveChart data={prData} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
     </div>
   );
-}
+};
+
+// --- Components ---
+
+const Sidebar = () => (
+  <nav className="hidden md:block w-64 bg-brand-light-dark border-r border-brand-border p-5">
+    <div className="text-2xl font-bold text-white mb-10 flex items-center">
+      <FiAlertTriangle className="text-brand-blue mr-2" />
+      <span>GNN Fraud AI</span>
+    </div>
+    <ul>
+      <NavItem icon={<FiGrid />} text="Dashboard" active />
+      <NavItem icon={<FiTarget />} text="Live Predictions" />
+    </ul>
+    <div className="absolute bottom-5">
+      <a href="#" className="flex items-center text-sm text-gray-400 hover:text-white">
+        <FiGithub className="mr-2" />
+        View on GitHub
+      </a>
+    </div>
+  </nav>
+);
+
+const NavItem = ({ icon, text, active = false }) => (
+  <li className={`flex items-center p-3 my-2 rounded-lg cursor-pointer transition-all duration-200 ${active ? 'bg-brand-blue text-white' : 'text-gray-400 hover:bg-brand-border'}`}>
+    {icon}
+    <span className="ml-4">{text}</span>
+  </li>
+);
+
+const Header = () => (
+  <header className="mb-8">
+    <h1 className="text-4xl font-bold text-white">Dashboard</h1>
+    <p className="text-gray-400">Model Performance Overview</p>
+  </header>
+);
+
+// Animation variants for the stat cards
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 }
+};
+
+const StatCards = ({ metrics }) => (
+  <motion.div 
+    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+    variants={containerVariants}
+  >
+    <StatCard title="Optimal Threshold" value={metrics.best_threshold.toFixed(2)} icon={<FiTarget />} />
+    <StatCard title="Fraud Recall" value={`${(metrics.recall * 100).toFixed(1)}%`} icon={<FiAlertTriangle />} />
+    <StatCard title="Fraud Precision" value={`${(metrics.precision * 100).toFixed(1)}%`} icon={<FiCheckCircle />} />
+    <StatCard title="Fraud F1-Score" value={metrics.f1_score.toFixed(2)} icon={<FiBalanceScale />} />
+  </motion.div>
+);
 
 const StatCard = ({ title, value, icon }) => (
   <motion.div 
-    className="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center"
-    whileHover={{ scale: 1.05, backgroundColor: '#2D3748' }}
-    transition={{ type: "spring", stiffness: 300 }}
+    variants={itemVariants}
+    className="bg-brand-light-dark p-5 rounded-lg border border-brand-border relative overflow-hidden group"
   >
-    <div className="text-3xl text-cyan-400 mr-4">{icon}</div>
-    <div>
-      <h3 className="text-gray-400 text-sm font-medium uppercase tracking-wider">{title}</h3>
-      <p className="text-3xl font-bold text-white mt-1">{value}</p>
+    {/* This creates the gradient hover effect */}
+    <div className="absolute inset-0 bg-gradient-to-r from-brand-cyan to-brand-blue opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+    
+    <div className="flex items-center">
+      <div className="text-3xl text-brand-blue mr-4">{icon}</div>
+      <div>
+        <h3 className="text-gray-400 text-sm font-medium uppercase tracking-wider">{title}</h3>
+        <p className="text-3xl font-bold text-white mt-1">{value}</p>
+      </div>
     </div>
   </motion.div>
 );
 
-export default App;
+const PRCurveChart = ({ data }) => (
+  <motion.div 
+    className="bg-brand-light-dark p-4 sm:p-6 rounded-lg border border-brand-border"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: 0.5 }}
+  >
+    <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-white">Precision-Recall Curve</h2>
+    <ResponsiveContainer width="100%" height={400}>
+      <AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 20 }}>
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#2F81F7" stopOpacity={0.4}/>
+            <stop offset="95%" stopColor="#2F81F7" stopOpacity={0}/>
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="#30363D" />
+        <XAxis dataKey="recall" stroke="#8B949E" type="number" domain={[0, 1]} tickFormatter={(val) => val.toFixed(1)}
+               label={{ value: 'Recall', position: 'insideBottom', offset: -15, fill: '#8B949E' }} />
+        <YAxis stroke="#8B949E" type="number" domain={[0, 1]} tickFormatter={(val) => val.toFixed(1)}
+               label={{ value: 'Precision', angle: -90, position: 'insideLeft', offset: 0, fill: '#8B949E' }}/>
+        <Tooltip
+          contentStyle={{ backgroundColor: 'rgba(13, 17, 23, 0.8)', border: '1px solid #30363D', color: '#E6EDF3' }}
+          labelStyle={{ color: '#E6EDF3' }}
+        />
+        <Legend wrapperStyle={{ color: '#8B949E' }} />
+        <Area type="monotone" dataKey="precision" name="Precision" stroke="#2F81F7" strokeWidth={2} fillOpacity={1} fill="url(#colorUv)" />
+      </AreaChart>
+    </ResponsiveContainer>
+  </motion.div>
+);
+
+export default Dashboard;
