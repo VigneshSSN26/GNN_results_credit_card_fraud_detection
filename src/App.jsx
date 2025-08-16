@@ -14,11 +14,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const metricsResponse = await fetch('/data/performance_metrics.json');
+        const metricsResponse = await fetch('/performance_metrics.json');
         const metricsData = await metricsResponse.json();
         setMetrics(metricsData);
 
-        const prResponse = await fetch('/data/pr_curve_data.json');
+        const prResponse = await fetch('/pr_curve_data.json');
         const rawPrData = await prResponse.json();
         const formattedPrData = rawPrData.recall.map((rec, index) => ({
           recall: rec,
