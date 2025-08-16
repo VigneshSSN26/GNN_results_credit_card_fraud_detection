@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Target, CheckCircle, AlertTriangle, Github, Grid, BarChart3, TrendingUp, Shield, Activity } from 'lucide-react';
+import { FiTarget, FiCheckCircle, FiAlertTriangle, FiGithub, FiGrid, FiBarChart3, FiTrendingUp, FiShield, FiActivity } from 'react-icons/fi';
 
 // Mock data for demonstration
 const mockMetrics = {
@@ -105,7 +105,7 @@ const Sidebar = () => (
     <div className="p-6">
       <div className="flex items-center mb-8">
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center mr-3">
-          <Shield className="w-6 h-6 text-white" />
+          <FiShield className="w-6 h-6 text-white" />
         </div>
         <div>
           <h1 className="text-xl font-bold text-white">FraudShield</h1>
@@ -114,16 +114,16 @@ const Sidebar = () => (
       </div>
       
       <ul className="space-y-2">
-        <NavItem icon={<Grid className="w-5 h-5" />} text="Dashboard" active />
-        <NavItem icon={<BarChart3 className="w-5 h-5" />} text="Analytics" />
-        <NavItem icon={<Target className="w-5 h-5" />} text="Predictions" />
-        <NavItem icon={<Activity className="w-5 h-5" />} text="Monitoring" />
+        <NavItem icon={<FiGrid className="w-5 h-5" />} text="Dashboard" active />
+        <NavItem icon={<FiBarChart3 className="w-5 h-5" />} text="Analytics" />
+        <NavItem icon={<FiTarget className="w-5 h-5" />} text="Predictions" />
+        <NavItem icon={<FiActivity className="w-5 h-5" />} text="Monitoring" />
       </ul>
       
       <div className="absolute bottom-6 left-6">
         <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
            className="flex items-center text-sm text-slate-400 hover:text-white transition-colors">
-          <Github className="w-4 h-4 mr-2" />
+          <FiGithub className="w-4 h-4 mr-2" />
           GitHub
         </a>
       </div>
@@ -164,7 +164,7 @@ const StatCards = ({ metrics }) => (
     <StatCard 
       title="Optimal Threshold" 
       value={metrics.best_threshold.toFixed(2)} 
-      icon={<Target className="w-6 h-6" />}
+      icon={<FiTarget className="w-6 h-6" />}
       trend="+2.3%"
       trendUp={true}
       gradient="from-purple-500 to-purple-600"
@@ -172,7 +172,7 @@ const StatCards = ({ metrics }) => (
     <StatCard 
       title="Fraud Recall" 
       value={`${(metrics.recall * 100).toFixed(1)}%`} 
-      icon={<AlertTriangle className="w-6 h-6" />}
+      icon={<FiAlertTriangle className="w-6 h-6" />}
       trend="+5.1%"
       trendUp={true}
       gradient="from-orange-500 to-red-500"
@@ -180,7 +180,7 @@ const StatCards = ({ metrics }) => (
     <StatCard 
       title="Fraud Precision" 
       value={`${(metrics.precision * 100).toFixed(1)}%`} 
-      icon={<CheckCircle className="w-6 h-6" />}
+      icon={<FiCheckCircle className="w-6 h-6" />}
       trend="+1.8%"
       trendUp={true}
       gradient="from-green-500 to-emerald-500"
@@ -188,7 +188,7 @@ const StatCards = ({ metrics }) => (
     <StatCard 
       title="F1-Score" 
       value={metrics.f1_score.toFixed(3)} 
-      icon={<TrendingUp className="w-6 h-6" />}
+      icon={<FiTrendingUp className="w-6 h-6" />}
       trend="+3.4%"
       trendUp={true}
       gradient="from-blue-500 to-cyan-500"
@@ -205,7 +205,7 @@ const StatCard = ({ title, value, icon, trend, trendUp, gradient }) => (
         <p className="text-2xl lg:text-3xl font-bold text-white mb-1">{value}</p>
         {trend && (
           <div className={`flex items-center text-sm ${trendUp ? 'text-green-400' : 'text-red-400'}`}>
-            <TrendingUp className={`w-4 h-4 mr-1 ${!trendUp ? 'rotate-180' : ''}`} />
+            <FiTrendingUp className={`w-4 h-4 mr-1 ${!trendUp ? 'rotate-180' : ''}`} />
             {trend}
           </div>
         )}
@@ -329,10 +329,10 @@ const RecentActivity = () => (
 const ActivityItem = ({ type, message, time, severity }) => {
   const getIcon = () => {
     switch(type) {
-      case 'detection': return <AlertTriangle className="w-4 h-4" />;
-      case 'model': return <CheckCircle className="w-4 h-4" />;
-      case 'alert': return <AlertTriangle className="w-4 h-4" />;
-      default: return <Activity className="w-4 h-4" />;
+      case 'detection': return <FiAlertTriangle className="w-4 h-4" />;
+      case 'model': return <FiCheckCircle className="w-4 h-4" />;
+      case 'alert': return <FiAlertTriangle className="w-4 h-4" />;
+      default: return <FiActivity className="w-4 h-4" />;
     }
   };
 
@@ -364,7 +364,7 @@ const StatusDisplay = ({ isError = false, message }) => (
       <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
         isError ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'
       }`}>
-        {isError ? <AlertTriangle className="w-8 h-8" /> : <Activity className="w-8 h-8 animate-spin" />}
+        {isError ? <FiAlertTriangle className="w-8 h-8" /> : <FiActivity className="w-8 h-8 animate-spin" />}
       </div>
       <h2 className="text-2xl font-bold mb-4 text-white">
         {isError ? "Failed to Load Dashboard Data" : "Loading Dashboard..."}
