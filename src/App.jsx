@@ -255,7 +255,7 @@ const RecentActivity = () => (
     <div className="space-y-4">
       <ActivityItem message="High-risk transaction #TX789 flagged" time="5 min ago" severity="high" />
       <ActivityItem message="Model retraining completed successfully" time="2 hours ago" severity="success" />
-      <Activity-Item message="Unusual activity spike from merchant M12" time="1 day ago" severity="warning" />
+      <ActivityItem message="Unusual activity spike from merchant M12" time="1 day ago" severity="warning" />
     </div>
   </motion.div>
 );
